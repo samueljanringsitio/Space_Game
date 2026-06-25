@@ -1,0 +1,1272 @@
+body {
+  background: radial-gradient(
+      ellipse at top,
+      rgba(0, 100, 200, 0.4) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at bottom,
+      rgba(100, 0, 200, 0.4) 0%,
+      transparent 50%
+    ),
+    linear-gradient(
+      135deg,
+      #0f0f23 0%,
+      #1a1a3a 25%,
+      #2d1b69 50%,
+      #1a1a3a 75%,
+      #0f0f23 100%
+    );
+  color: #fff;
+  margin: 0;
+  font-family: "Orbitron", "Arial", sans-serif;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  overflow-y: auto; /* Allow vertical scroll */
+  position: relative;
+  background-attachment: fixed;
+  min-height: 100vh;
+  scroll-behavior: smooth;
+}
+
+/* Starfield background effect */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(3px 3px at 20px 30px, #00ffff, transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(2px 2px at 90px 40px, #ffff00, transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(0, 255, 255, 0.8), transparent),
+    radial-gradient(2px 2px at 160px 30px, #ff00ff, transparent),
+    radial-gradient(
+      1px 1px at 200px 60px,
+      rgba(255, 255, 255, 0.7),
+      transparent
+    );
+  background-repeat: repeat;
+  background-size: 250px 120px;
+  animation: starfield 25s linear infinite;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.8;
+}
+
+/* GitHub Pages Mobile Fix */
+@media (max-width: 768px) {
+  body::before {
+    background-attachment: scroll; /* Fix untuk mobile GitHub Pages */
+  }
+}
+
+@keyframes starfield {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100px);
+  }
+}
+
+#gameContainer {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Navigation Bar */
+.navbar {
+  position: sticky;
+  top: 10px;
+  margin: 0 auto 20px auto;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  background: rgba(0, 0, 0, 0.95);
+  padding: 10px;
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(0, 255, 65, 0.3);
+  z-index: 1002;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.5);
+  width: fit-content;
+}
+
+.nav-item {
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  color: #ccc;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.nav-item:hover {
+  background: rgba(0, 255, 65, 0.2);
+  color: #00ff41;
+  transform: scale(1.05);
+}
+
+.nav-item.active {
+  background: linear-gradient(145deg, #00ff41, #00cc33);
+  color: #000;
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+}
+
+/* UI Layout Container untuk Desktop */
+.game-layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  position: relative;
+}
+
+/* Canvas Container */
+.canvas-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* UI fixed untuk desktop - split kiri kanan */
+#gameUI {
+  display: none; /* Hide default, akan diganti dengan gameUI-left dan gameUI-right */
+}
+
+/* UI Left - 1 item */
+.gameUI-left {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 150px;
+  align-self: center;
+}
+
+/* UI Right - 2 items */
+.gameUI-right {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 150px;
+  align-self: center;
+}
+
+.gameUI-left div,
+.gameUI-right div {
+  background: linear-gradient(
+    145deg,
+    rgba(0, 0, 0, 0.8),
+    rgba(0, 50, 100, 0.3)
+  );
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: 2px solid #00ff41;
+  color: #00ff41;
+  text-shadow: 0 0 12px #00ff41;
+  box-shadow: inset 0 0 15px rgba(0, 255, 65, 0.1),
+    0 0 15px rgba(0, 255, 65, 0.3);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.gameUI-left div:hover,
+.gameUI-right div:hover {
+  transform: scale(1.05);
+  box-shadow: inset 0 0 25px rgba(0, 255, 65, 0.2),
+    0 0 30px rgba(0, 255, 65, 0.5);
+}
+
+canvas {
+  background: radial-gradient(
+      ellipse at center,
+      rgba(20, 20, 60, 0.9) 0%,
+      rgba(5, 5, 20, 0.95) 100%
+    ),
+    linear-gradient(
+      45deg,
+      transparent 48%,
+      rgba(0, 255, 65, 0.05) 50%,
+      transparent 52%
+    ),
+    linear-gradient(
+      135deg,
+      transparent 48%,
+      rgba(0, 100, 255, 0.03) 50%,
+      transparent 52%
+    );
+  border: 3px solid;
+  border-image: linear-gradient(45deg, #00ff41, #00aaff, #ff0080, #00ff41) 1;
+  border-radius: 15px;
+  box-shadow: 0 0 40px rgba(0, 255, 65, 0.5), 0 0 80px rgba(0, 100, 255, 0.2),
+    inset 0 0 50px rgba(0, 50, 100, 0.15);
+  position: relative;
+  backdrop-filter: blur(2px);
+  display: block;
+  margin: 0 auto;
+  image-rendering: pixelated;
+
+  /* Default desktop size - reduced to 90% of original size */
+  width: 810px !important;
+  height: 540px !important;
+  min-width: 810px;
+  min-height: 540px;
+  max-width: 810px;
+  max-height: 540px;
+  transform: scale(1);
+  transform-origin: center center;
+}
+
+/* Removed all media queries for canvas - using fixed consistent size */
+
+/* Mobile portrait - Tall canvas */
+@media (max-width: 768px) and (orientation: portrait) {
+  body {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  #gameContainer {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  /* Mobile: Kembali ke layout vertikal di atas canvas */
+  .game-layout {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gameUI-left,
+  .gameUI-right {
+    display: none; /* Hide desktop UI */
+  }
+
+  #gameUI {
+    display: flex !important; /* Show mobile UI */
+    justify-content: space-between;
+    align-items: center;
+    width: 90vw;
+    max-width: 380px;
+    margin-bottom: 8px;
+    font-size: 11px;
+    font-weight: bold;
+    gap: 6px;
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
+
+  #gameUI div {
+    background: linear-gradient(
+      145deg,
+      rgba(0, 0, 0, 0.8),
+      rgba(0, 50, 100, 0.3)
+    );
+    padding: 6px 10px;
+    border-radius: 12px;
+    border: 2px solid #00ff41;
+    color: #00ff41;
+    text-shadow: 0 0 12px #00ff41;
+    box-shadow: inset 0 0 15px rgba(0, 255, 65, 0.1),
+      0 0 15px rgba(0, 255, 65, 0.3);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    font-size: 10px;
+    flex: 1;
+    min-width: 75px;
+    text-align: center;
+  }
+
+  canvas {
+    width: 90vw !important;
+    height: calc(90vw * 1) !important; /* Square ratio 1:1 - Lebih kompak */
+    min-width: 280px !important;
+    min-height: 280px !important;
+    max-width: 380px !important;
+    max-height: 380px !important;
+    border-width: 2px;
+    margin: 5px auto;
+    transform: none !important;
+    transform-origin: center center;
+    position: relative;
+  }
+
+  /* Mobile navbar - positioned sticky */
+  .navbar {
+    position: sticky;
+    top: 5px;
+    margin: 0 auto 8px auto;
+    width: 90vw;
+    max-width: 380px;
+    gap: 4px;
+    padding: 6px;
+    font-size: 10px;
+    border-radius: 12px;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(15px);
+  }
+
+  .navbar .nav-item {
+    padding: 5px 8px;
+    font-size: 9px;
+    border-radius: 6px;
+    flex: 1;
+    text-align: center;
+    min-width: 50px;
+  }
+
+  /* GameUI mobile layout */
+  #gameUI {
+    width: 90vw;
+    max-width: 380px;
+    font-size: 11px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+
+  #gameUI div {
+    padding: 6px 10px;
+    font-size: 10px;
+    border-radius: 12px;
+    flex: 1;
+    min-width: 75px;
+    text-align: center;
+  }
+}
+
+/* Mobile landscape - Wide canvas */
+@media (max-width: 768px) and (orientation: landscape) {
+  #gameContainer {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  /* Mobile landscape: tetap layout vertikal */
+  .game-layout {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gameUI-left,
+  .gameUI-right {
+    display: none;
+  }
+
+  #gameUI {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    width: 95vw;
+    max-width: 600px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  #gameUI div {
+    background: linear-gradient(
+      145deg,
+      rgba(0, 0, 0, 0.8),
+      rgba(0, 50, 100, 0.3)
+    );
+    padding: 6px 12px;
+    border-radius: 15px;
+    border: 2px solid #00ff41;
+    color: #00ff41;
+    text-shadow: 0 0 12px #00ff41;
+    box-shadow: inset 0 0 15px rgba(0, 255, 65, 0.1),
+      0 0 15px rgba(0, 255, 65, 0.3);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    font-size: 11px;
+    flex: 1;
+    text-align: center;
+  }
+
+  canvas {
+    width: 95vw !important;
+    height: calc(95vw * 0.6) !important; /* Wide ratio 1:0.6 */
+    max-width: 768px !important;
+    max-height: 460px !important;
+    min-width: 280px !important;
+    min-height: 168px !important;
+    border-width: 2px;
+    transform: none !important;
+    transform-origin: center center;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .navbar {
+    position: sticky;
+    top: 5px;
+    margin: 0 auto 10px auto;
+    gap: 8px;
+    padding: 8px;
+    font-size: 12px;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(15px);
+  }
+}
+
+/* Tablet and medium screens */
+@media (min-width: 768px) and (max-width: 1024px) {
+  #gameContainer {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  /* Tablet: gunakan layout split tapi dengan elemen yang lebih compact */
+  .game-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    max-width: 1000px;
+  }
+
+  .gameUI-left {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 140px;
+  }
+
+  .gameUI-right {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 140px;
+  }
+
+  #gameUI {
+    display: none !important;
+  }
+
+  .gameUI-left div,
+  .gameUI-right div {
+    background: linear-gradient(
+      145deg,
+      rgba(0, 0, 0, 0.8),
+      rgba(0, 50, 100, 0.3)
+    );
+    padding: 8px 12px;
+    border-radius: 15px;
+    border: 2px solid #00ff41;
+    color: #00ff41;
+    text-shadow: 0 0 12px #00ff41;
+    box-shadow: inset 0 0 15px rgba(0, 255, 65, 0.1),
+      0 0 15px rgba(0, 255, 65, 0.3);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 5px;
+  }
+
+  canvas {
+    width: 486px !important;
+    height: 324px !important;
+    display: block;
+    border: 3px solid #00ff41;
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.4),
+      inset 0 0 10px rgba(0, 255, 65, 0.1);
+    background: radial-gradient(
+      circle at center,
+      rgba(0, 0, 0, 0.9),
+      rgba(0, 50, 100, 0.1)
+    );
+    margin: 0 auto;
+    transform-origin: center center;
+  }
+
+  .navbar {
+    position: sticky;
+    top: 10px;
+    margin: 0 auto 15px auto;
+    gap: 12px;
+    padding: 10px;
+    font-size: 14px;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(15px);
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) and (orientation: portrait) {
+  #gameContainer {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  canvas {
+    width: 90vw !important;
+    height: calc(90vw * 1) !important; /* Square ratio 1:1 untuk layar kecil */
+    max-width: 320px !important;
+    max-height: 320px !important;
+    min-width: 240px !important;
+    min-height: 240px !important;
+    transform: none !important;
+    transform-origin: center center;
+    margin: 5px auto;
+    position: relative;
+  }
+
+  .navbar {
+    position: sticky;
+    top: 5px;
+    margin: 0 auto 8px auto;
+    width: 90vw;
+    max-width: 320px;
+    gap: 2px;
+    padding: 5px;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(15px);
+  }
+
+  .navbar .nav-item {
+    padding: 4px 6px;
+    font-size: 8px;
+  }
+
+  #gameUI {
+    width: 90vw;
+    max-width: 320px;
+    font-size: 9px;
+  }
+}
+
+/* Removed desktop media queries - using fixed consistent size */
+
+.menu {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(
+    145deg,
+    rgba(0, 0, 0, 0.95),
+    rgba(10, 20, 40, 0.9),
+    rgba(0, 0, 0, 0.95)
+  );
+  padding: 20px;
+  border-radius: 15px;
+  border: 3px solid;
+  border-image: linear-gradient(45deg, #00ff41, #0066ff, #00ff41) 1;
+  text-align: center;
+  z-index: 1001;
+  box-shadow: 0 0 60px rgba(0, 255, 65, 0.5),
+    inset 0 0 30px rgba(0, 100, 255, 0.1);
+  backdrop-filter: blur(12px);
+
+  /* Responsive sizing - dikurangi dari default */
+  width: clamp(300px, 80vw, 500px);
+  max-height: 75vh;
+  overflow-y: auto;
+}
+
+.menu-content {
+  animation: fadeIn 0.5s ease;
+}
+
+.menu-content.hidden {
+  display: none;
+}
+
+/* Settings Styles */
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0;
+  padding: 10px;
+  background: rgba(0, 50, 100, 0.2);
+  border-radius: 10px;
+}
+
+.setting-item label {
+  color: #ccc;
+  font-size: 1.1em;
+}
+
+.toggle-btn {
+  background: linear-gradient(145deg, #00ff41, #00cc33);
+  color: #000;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn.off {
+  background: linear-gradient(145deg, #666, #444);
+  color: #ccc;
+}
+
+.toggle-btn:hover {
+  transform: scale(1.1);
+}
+
+select {
+  background: rgba(0, 0, 0, 0.8);
+  color: #00ff41;
+  border: 2px solid #00ff41;
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-size: 1em;
+  transition: all 0.3s ease;
+}
+
+select:hover {
+  background: rgba(0, 50, 100, 0.3);
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+}
+
+select:focus {
+  outline: none;
+  box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+}
+
+/* Controls Styles */
+.controls-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.control-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  border: 1px solid rgba(0, 255, 65, 0.2);
+}
+
+.control-key {
+  background: #00ff41;
+  color: #000;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  min-width: 60px;
+  text-align: center;
+}
+
+.powerups-section {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(0, 50, 100, 0.3);
+  border-radius: 15px;
+}
+
+.powerups-mini {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  font-size: 0.9em;
+}
+
+/* Features List */
+.features-list {
+  text-align: left;
+  margin: 20px 0;
+}
+
+.features-list p {
+  margin: 8px 0;
+  padding: 5px;
+  background: rgba(0, 255, 65, 0.1);
+  border-radius: 5px;
+}
+
+.menu h1 {
+  color: #00ff41;
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  text-shadow: 0 0 20px #00ff41, 0 0 40px #00aaff, 0 0 60px #00ff41;
+  animation: titlePulse 2s infinite ease-in-out;
+  font-weight: bold;
+  background: linear-gradient(145deg, #00ff41, #00aaff, #00ff41);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 65, 0.5));
+}
+
+.controls-info {
+  background: rgba(0, 50, 100, 0.3);
+  padding: 20px;
+  border-radius: 15px;
+  margin: 20px 0;
+  border: 1px solid rgba(0, 255, 65, 0.3);
+}
+
+.controls-info h3 {
+  color: #00aaff;
+  margin-bottom: 15px;
+  text-shadow: 0 0 10px #00aaff;
+}
+
+.powerups-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.powerup-item {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 255, 65, 0.2);
+  font-size: 0.9em;
+}
+
+.menu p {
+  margin: 15px 0;
+  font-size: 1.1em;
+  color: #ccc;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+.menu button {
+  background: linear-gradient(145deg, #00ff41, #00cc33, #00aa22);
+  color: #000;
+  border: none;
+  padding: 14px 28px;
+  font-size: 1.1em;
+  font-weight: bold;
+  border-radius: 20px;
+  cursor: pointer;
+  margin: 10px 8px;
+  transition: all 0.4s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(0, 255, 65, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.menu button:hover {
+  background: linear-gradient(145deg, #00cc33, #00ff41, #00dd33);
+  transform: scale(1.08) translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 255, 65, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.menu button:active {
+  transform: scale(1.05) translateY(0);
+}
+
+.audio-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.audio-controls button {
+  font-size: 1em;
+  padding: 12px 20px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@keyframes titlePulse {
+  0%,
+  100% {
+    opacity: 1;
+    text-shadow: 0 0 20px #00ff41, 0 0 40px #00ff41, 0 0 60px #00ff41;
+  }
+  50% {
+    opacity: 0.8;
+    text-shadow: 0 0 30px #00ff41, 0 0 60px #00ff41, 0 0 90px #00ff41;
+  }
+}
+
+/* Enhanced particle effects */
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, #ff4444, #ff0000);
+  pointer-events: none;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #ff4444;
+  animation: particleFloat 2s linear forwards;
+}
+
+@keyframes particleFloat {
+  0% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(360deg) translateY(-80px);
+  }
+}
+
+/* Enhanced title animation */
+@keyframes titlePulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: drop-shadow(0 0 20px rgba(0, 255, 65, 0.8));
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.02);
+    filter: drop-shadow(0 0 30px rgba(0, 170, 255, 0.8));
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) and (orientation: portrait) {
+  /* Menu responsiveness for mobile portrait */
+  .menu {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 95vw;
+    max-width: 380px;
+    padding: 20px 15px;
+    max-height: 80vh;
+    border-radius: 15px;
+  }
+
+  .menu h1 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+  }
+
+  .menu button {
+    font-size: 1em;
+    padding: 12px 20px;
+    margin: 8px 5px;
+    border-radius: 15px;
+  }
+
+  .setting-item {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .controls-grid {
+    gap: 5px;
+  }
+
+  .control-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 5px;
+    padding: 8px;
+  }
+
+  .powerups-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .powerups-mini {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) and (orientation: portrait) {
+  #gameContainer {
+    padding-top: 20px; /* Konsisten dengan relative navbar */
+  }
+
+  .menu {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 98vw;
+    max-width: 330px;
+    padding: 15px 10px;
+  }
+
+  .menu h1 {
+    font-size: 1.6em;
+  }
+
+  .menu button {
+    font-size: 0.9em;
+    padding: 10px 15px;
+  }
+}
+
+/* Landscape mobile adjustments */
+@media (max-width: 768px) and (orientation: landscape) {
+  #gameContainer {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .navbar {
+    position: sticky;
+    top: 5px;
+    margin: 0 auto 10px auto;
+    gap: 8px;
+    padding: 8px;
+    font-size: 12px;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(15px);
+  }
+
+  .menu {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 75vh;
+  }
+}
+
+/* Tablet adjustments */
+@media (max-width: 1300px) and (min-width: 769px) {
+  #gameContainer {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .navbar {
+    position: sticky;
+    top: 10px;
+    margin: 0 auto 15px auto;
+    gap: 15px;
+    padding: 12px;
+    font-size: 14px;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(15px);
+  }
+
+  .menu {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 25px;
+  }
+}
+
+/* Large screens - Desktop konsisten */
+@media (min-width: 1400px) {
+  #gameContainer {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .navbar {
+    position: sticky;
+    top: 10px;
+    margin: 0 auto 20px auto;
+    padding: 12px;
+    gap: 18px;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(15px);
+  }
+
+  .menu {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 25px;
+  }
+
+  #gameUI {
+    width: 990px;
+    font-size: 15px;
+    gap: 18px;
+  }
+
+  canvas {
+    width: 990px !important;
+    height: min(540px, 60vh) !important;
+    max-height: 540px;
+    margin: 0 auto;
+    transform-origin: center center;
+  }
+}
+
+/* Mobile dengan Desktop View - Override untuk menampilkan gameUI di atas canvas */
+@media screen and (max-device-width: 768px) and (min-width: 769px) {
+  /* Ketika mobile menggunakan desktop view */
+
+  /* PAKSA sembunyikan desktop UI sidebar dengan prioritas tinggi */
+  .gameUI-left,
+  .gameUI-right {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    left: -9999px !important;
+  }
+
+  /* Pastikan div di dalam juga tersembunyi */
+  .gameUI-left div,
+  .gameUI-right div {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+
+  /* Force tampilkan mobile UI di desktop view */
+  #gameUI {
+    display: flex !important; /* Override desktop hide */
+    justify-content: space-between;
+    align-items: center;
+    width: 99vw;
+    max-width: 900px;
+    margin: 0 auto 25px auto; /* Posisi di bawah navbar, di atas canvas */
+    font-size: 16px;
+    font-weight: bold;
+    gap: 15px;
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
+
+  #gameUI div {
+    background: linear-gradient(
+      145deg,
+      rgba(0, 0, 0, 0.8),
+      rgba(0, 50, 100, 0.3)
+    );
+    padding: 12px 20px;
+    border-radius: 18px;
+    border: 2px solid #00ff41;
+    color: #00ff41;
+    text-shadow: 0 0 12px #00ff41;
+    box-shadow: inset 0 0 15px rgba(0, 255, 65, 0.1),
+      0 0 15px rgba(0, 255, 65, 0.3);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    font-size: 15px;
+    flex: 1;
+    min-width: 100px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  /* Force layout vertikal seperti mobile */
+  .game-layout {
+    flex-direction: column !important;
+    gap: 20px !important;
+    width: 100% !important;
+    align-items: center !important;
+    justify-content: center !important;
+    /* Pastikan tidak ada space untuk sidebar */
+    max-width: 100% !important;
+  }
+
+  /* Pastikan tidak ada elemen UI desktop yang muncul */
+  .game-layout > .gameUI-left,
+  .game-layout > .gameUI-right,
+  .canvas-container ~ .gameUI-left,
+  .canvas-container ~ .gameUI-right {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+  }
+
+  /* Adjust canvas size untuk mobile dengan desktop view */
+  canvas {
+    width: 99vw !important;
+    height: calc(99vw * 0.65) !important; /* Maintain good aspect ratio */
+    max-width: 900px !important;
+    max-height: 585px !important;
+    min-width: 500px !important;
+    min-height: 325px !important;
+    transform: none !important;
+    transform-origin: center center;
+    margin: 0 auto;
+    position: relative;
+    border-width: 3px !important;
+  }
+
+  /* Navbar tetap responsive */
+  .navbar {
+    position: sticky !important;
+    top: 10px !important;
+    margin: 0 auto 25px auto !important;
+    width: 99vw !important;
+    max-width: 900px !important;
+    gap: 15px !important;
+    padding: 15px !important;
+    font-size: 16px !important;
+    border-radius: 18px !important;
+    flex-wrap: wrap !important;
+    justify-content: space-around !important;
+    background: rgba(0, 0, 0, 0.95) !important;
+    backdrop-filter: blur(15px) !important;
+  }
+
+  .navbar .nav-item {
+    padding: 12px 20px !important;
+    font-size: 15px !important;
+    border-radius: 12px !important;
+    flex: 1 !important;
+    text-align: center !important;
+    min-width: 80px !important;
+    font-weight: bold !important;
+  }
+
+  /* Container adjustment - paksa mobile layout */
+  #gameContainer {
+    position: relative !important;
+    min-height: 100vh !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 20px 5px !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  /* Paksa sembunyikan semua elemen UI desktop dengan selector yang lebih spesifik */
+  #gameContainer .gameUI-left,
+  #gameContainer .gameUI-right,
+  .game-layout .gameUI-left,
+  .game-layout .gameUI-right,
+  div.gameUI-left,
+  div.gameUI-right {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    z-index: -1 !important;
+  }
+
+  /* Paksa sembunyikan semua child elements dari gameUI-left dan gameUI-right */
+  .gameUI-left *,
+  .gameUI-right * {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+}

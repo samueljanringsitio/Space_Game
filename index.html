@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <title>Space Invaders - Enhanced Edition</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="gameContainer">
+      <!-- Navigation Bar -->
+      <nav id="navBar" class="navbar">
+        <div class="nav-item active" data-menu="main">🎮 MAIN</div>
+        <div class="nav-item" data-menu="settings">⚙️ SETTINGS</div>
+        <div class="nav-item" data-menu="controls">🕹️ CONTROLS</div>
+        <div class="nav-item" data-menu="about">ℹ️ ABOUT</div>
+      </nav>
+
+      <!-- Mobile/Traditional Layout (will be hidden on desktop) -->
+      <div id="gameUI">
+        <div id="score">Score: 0</div>
+        <div id="lives">Lives: 100000000000000</div>
+        <div id="level">Level: 1</div>
+      </div>
+
+      <!-- Desktop Split Layout -->
+      <div class="game-layout">
+        <!-- Left UI Elements (1 element) -->
+        <div class="gameUI-left">
+          <div id="score-desktop">Score: 0</div>
+        </div>
+
+        <!-- Canvas Center -->
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+        <!-- Right UI Elements (2 elements) -->
+        <div class="gameUI-right">
+          <div id="lives-desktop">Lives: 100000000000000</div>
+          <div id="level-desktop">Level: 1</div>
+        </div>
+      </div>
+
+      <!-- Main Menu -->
+      <div id="startMenu" class="menu">
+        <div class="menu-content" id="mainContent">
+          <h1>🚀 SPACE INVADERS 🚀</h1>
+          <p>Defend Earth from alien invasion!</p>
+          <button id="startBtn">🚀 START MISSION (Level 1-10)</button>
+          <button id="quickPlayBtn">⚡ QUICK PLAY (Endless)</button>
+        </div>
+
+        <!-- Settings Menu -->
+        <div class="menu-content hidden" id="settingsContent">
+          <h2>⚙️ SETTINGS</h2>
+          <div class="setting-item">
+            <label>🔊 Sound Effects:</label>
+            <button id="soundToggle" class="toggle-btn">ON</button>
+          </div>
+          <div class="setting-item">
+            <label>🎵 Background Music:</label>
+            <button id="musicToggle" class="toggle-btn">ON</button>
+          </div>
+          <div class="setting-item">
+            <label>🎯 Difficulty:</label>
+            <select id="difficultySelect">
+              <option value="easy">Easy</option>
+              <option value="normal" selected>Normal</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <label>🎨 Graphics:</label>
+            <select id="graphicsSelect">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <label>🎮 Control Mode:</label>
+            <select id="controlSelect">
+              <option value="mouse" selected>Mouse Control</option>
+              <option value="keyboard">Keyboard Control</option>
+              <option value="both">Both (Mouse + Keyboard)</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <label>🖱️ Mouse Active:</label>
+            <button id="mouseToggle" class="toggle-btn">ON</button>
+          </div>
+        </div>
+
+        <!-- Controls Menu -->
+        <div class="menu-content hidden" id="controlsContent">
+          <h2>🕹️ CONTROLS</h2>
+          <div class="controls-grid">
+            <div class="control-item">
+              <span class="control-key">�️ Mouse</span>
+              <span>Move & Click to shoot</span>
+            </div>
+            <div class="control-item">
+              <span class="control-key">← →</span>
+              <span>Move Left/Right</span>
+            </div>
+            <div class="control-item">
+              <span class="control-key">SPACE</span>
+              <span>Shoot</span>
+            </div>
+            <div class="control-item">
+              <span class="control-key">P</span>
+              <span>Pause Game</span>
+            </div>
+            <div class="control-item">
+              <span class="control-key">M</span>
+              <span>Mute Audio</span>
+            </div>
+          </div>
+          <div class="powerups-section">
+            <h3>Power-ups:</h3>
+            <div class="powerups-mini">
+              <span>⚡ Rapid Fire</span>
+              <span>❤️ Extra Life</span>
+              <span>💎 Bonus Points</span>
+              <span>🔫 Double Shot</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- About Menu -->
+        <div class="menu-content hidden" id="aboutContent">
+          <h2>ℹ️ ABOUT GAME</h2>
+          <p><strong>Space Invaders Enhanced Edition</strong></p>
+          <p>Version 2.0</p>
+          <div class="features-list">
+            <p>
+              🎯 <strong>Mission Mode:</strong> 10 level campaign with different
+              objectives
+            </p>
+            <p>
+              ⚡ <strong>Quick Play:</strong> Endless alien waves for high score
+            </p>
+            <p>✨ Realistic Graphics</p>
+            <p>🎵 Procedural Audio</p>
+            <p>🖱️ Mouse & Touch Control</p>
+            <p>👾 Epic Boss Battles</p>
+            <p>🏆 Multiple Weapons</p>
+          </div>
+          <p><strong>Mission Objectives:</strong></p>
+          <div class="features-list">
+            <p>• Eliminate specific number of aliens</p>
+            <p>• Survive for certain time periods</p>
+            <p>• Achieve target scores</p>
+            <p>• Defeat boss enemies</p>
+            <p>• Build combo streaks</p>
+          </div>
+          <p><small>© 2025 Enhanced by AI Assistant</small></p>
+        </div>
+      </div>
+
+      <div id="gameOverMenu" class="menu hidden">
+        <h1>💀 MISSION FAILED</h1>
+        <p id="finalScore">Final Score: 0</p>
+        <button id="restartBtn">🔄 RETRY MISSION</button>
+        <button id="mainMenuFromGameOverBtn">🏠 MAIN MENU</button>
+      </div>
+
+      <div id="winMenu" class="menu hidden">
+        <h1>🏆 LEVEL COMPLETE!</h1>
+        <p id="winScore">Score: 0</p>
+        <button id="nextLevelBtn">➡️ NEXT LEVEL</button>
+      </div>
+
+      <div id="pauseMenu" class="menu hidden">
+        <h1>⏸️ PAUSED</h1>
+        <button id="resumeBtn">▶️ RESUME</button>
+        <button id="mainMenuBtn">🏠 MAIN MENU</button>
+      </div>
+    </div>
+
+    <!-- Audio elements -->
+    <audio id="backgroundMusic" preload="auto" loop style="display: none">
+      <source src="song/retro-game-music-245230.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio id="shootSound" preload="auto">
+      <source
+        src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjc="
+        type="audio/wav"
+      />
+    </audio>
+    <audio id="explosionSound" preload="auto">
+      <source
+        src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjeF0fPWeiwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGIYBjc="
+        type="audio/wav"
+      />
+    </audio>
+
+    <script src="config.js"></script>
+    <script src="script_fixed.js"></script>
+
+    <script>
+      // Settings functionality (will sync with script_fixed.js)
+      // Note: settings object is already declared in script_fixed.js
+
+      // Navigation functionality
+      function showContent(tabName) {
+        // Hide all content
+        const contents = document.querySelectorAll(".menu-content");
+        contents.forEach((content) => content.classList.add("hidden"));
+
+        // Remove active class from all nav items
+        const navItems = document.querySelectorAll(".nav-item");
+        navItems.forEach((item) => item.classList.remove("active"));
+
+        // Show selected content
+        const contentElement = document.getElementById(tabName + "Content");
+        if (contentElement) {
+          contentElement.classList.remove("hidden");
+        }
+
+        // Add active class to clicked nav item
+        const activeNavItem = document.querySelector(
+          `[data-menu="${tabName}"]`
+        );
+        if (activeNavItem) {
+          activeNavItem.classList.add("active");
+        }
+      }
+
+      // Settings toggles
+      function toggleSetting(settingName) {
+        const button = document.getElementById(settingName + "Toggle");
+        if (window.settings) {
+          window.settings[settingName + "Enabled"] =
+            !window.settings[settingName + "Enabled"];
+          button.textContent = window.settings[settingName + "Enabled"]
+            ? "ON"
+            : "OFF";
+          button.classList.toggle(
+            "off",
+            !window.settings[settingName + "Enabled"]
+          );
+        }
+      }
+
+      // Initialize settings
+      document.addEventListener("DOMContentLoaded", function () {
+        // Wait for script_fixed.js to load and ensure settings exist
+        if (!window.settings) {
+          console.log("Settings not found, initializing...");
+          window.settings = {
+            soundEnabled: true,
+            musicEnabled: true,
+            difficulty: "normal",
+            graphics: "high",
+            controlMode: "mouse",
+            mouseActive: true,
+          };
+        }
+
+        console.log("Settings initialized:", window.settings);
+
+        // Add navigation event listeners
+        const navItems = document.querySelectorAll(".nav-item");
+        navItems.forEach((item) => {
+          item.addEventListener("click", function () {
+            const menuName = this.getAttribute("data-menu");
+            showContent(menuName);
+          });
+        });
+
+        // Set default tab
+        showContent("main");
+
+        // Auto-start music on first user interaction
+        let userInteracted = false;
+        function enableMusicOnInteraction() {
+          if (!userInteracted) {
+            console.log("First user interaction detected");
+            userInteracted = true;
+            const backgroundMusic = document.getElementById("backgroundMusic");
+            console.log("Background music element found:", backgroundMusic);
+            console.log("Settings:", window.settings);
+
+            if (
+              backgroundMusic &&
+              window.settings &&
+              window.settings.musicEnabled
+            ) {
+              console.log("Attempting to start music on interaction");
+              backgroundMusic.volume = 0.3;
+              backgroundMusic.currentTime = 0;
+              const playPromise = backgroundMusic.play();
+              if (playPromise !== undefined) {
+                playPromise
+                  .then(() => {
+                    console.log(
+                      "Music started successfully on user interaction"
+                    );
+                  })
+                  .catch((error) => {
+                    console.log("Failed to start music on interaction:", error);
+                  });
+              }
+            }
+            // Remove event listeners after first interaction
+            document.removeEventListener("click", enableMusicOnInteraction);
+            document.removeEventListener("keydown", enableMusicOnInteraction);
+            document.removeEventListener(
+              "touchstart",
+              enableMusicOnInteraction
+            );
+          }
+        }
+
+        // Add event listeners for user interaction
+        document.addEventListener("click", enableMusicOnInteraction);
+        document.addEventListener("keydown", enableMusicOnInteraction);
+        document.addEventListener("touchstart", enableMusicOnInteraction);
+
+        // Initialize settings buttons
+        const soundBtn = document.getElementById("soundToggle");
+        const musicBtn = document.getElementById("musicToggle");
+
+        if (soundBtn) {
+          soundBtn.addEventListener("click", () => toggleSetting("sound"));
+        }
+
+        if (musicBtn) {
+          musicBtn.addEventListener("click", () => {
+            const backgroundMusic = document.getElementById("backgroundMusic");
+            if (window.settings) {
+              window.settings.musicEnabled = !window.settings.musicEnabled;
+              musicBtn.textContent = window.settings.musicEnabled
+                ? "ON"
+                : "OFF";
+              musicBtn.classList.toggle("off", !window.settings.musicEnabled);
+
+              // Control background music playback
+              if (window.settings.musicEnabled) {
+                backgroundMusic.volume = 0.3; // Set volume to 30%
+                // Ensure music is loaded before playing
+                if (backgroundMusic.readyState >= 2) {
+                  backgroundMusic.currentTime = 0;
+                  backgroundMusic.play().catch(console.log);
+                } else {
+                  backgroundMusic.addEventListener(
+                    "canplaythrough",
+                    () => {
+                      backgroundMusic.currentTime = 0;
+                      backgroundMusic.play().catch(console.log);
+                    },
+                    { once: true }
+                  );
+                  backgroundMusic.load();
+                }
+              } else {
+                backgroundMusic.pause();
+              }
+            }
+          });
+        }
+
+        // Difficulty selector
+        const difficultySelect = document.getElementById("difficultySelect");
+        if (difficultySelect) {
+          difficultySelect.addEventListener("change", function () {
+            if (window.settings) {
+              window.settings.difficulty = this.value;
+            }
+          });
+        }
+
+        // Graphics selector
+        const graphicsSelect = document.getElementById("graphicsSelect");
+        if (graphicsSelect) {
+          graphicsSelect.addEventListener("change", function () {
+            if (window.settings) {
+              window.settings.graphics = this.value;
+            }
+          });
+        }
+
+        // Control mode selector
+        const controlSelect = document.getElementById("controlSelect");
+        if (controlSelect) {
+          controlSelect.addEventListener("change", function () {
+            if (window.settings) {
+              window.settings.controlMode = this.value;
+            }
+          });
+        }
+
+        // Mouse active toggle
+        const mouseBtn = document.getElementById("mouseToggle");
+        if (mouseBtn) {
+          mouseBtn.addEventListener("click", function () {
+            if (window.settings) {
+              window.settings.mouseActive = !window.settings.mouseActive;
+              this.textContent = window.settings.mouseActive ? "ON" : "OFF";
+              this.className = window.settings.mouseActive
+                ? "toggle-btn"
+                : "toggle-btn off";
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
