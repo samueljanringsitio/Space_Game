@@ -1,4 +1,4 @@
-# 🚀 Space Invaders Game!!
+# 🚀 Space Invaders Game!
 
 ## 📂 File Structure Update
 
